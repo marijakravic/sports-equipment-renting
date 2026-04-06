@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\EquipmentItemController;
 use App\Http\Controllers\Api\EquipmentStateController;
 use App\Http\Controllers\Api\EquipmentTypeController;
-use App\Http\Controllers\Api\GenderController;
+use App\Http\Controllers\Api\AgeController;
 use App\Http\Controllers\Api\SportController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +21,7 @@ Route::post('/additems', [EquipmentItemController::class, 'store']);
 
 Route::get('/sports', [SportController::class, 'index']);
 Route::get('/equipmentTypes', [EquipmentTypeController::class, 'index']);
-Route::get('/genders', [GenderController::class, 'index']);
+Route::get('/ages', [AgeController::class, 'index']);
 Route::get('/states', [EquipmentStateController::class, 'index']);
 Route::get('//equipmentTypes/{sportId}', [EquipmentTypeController::class, 'bySport']);
+Route::get('/equipment-items', [EquipmentItemController::class, 'index']);

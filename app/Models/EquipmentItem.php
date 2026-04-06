@@ -9,8 +9,8 @@ class EquipmentItem extends Model
     protected $fillable = [
         'equipment_type_id',
         'sport_id',
+        'equipment_state_id',
         'name',
-        'gender',
         'serial_number',
         'barcode',
         'size',
@@ -18,7 +18,11 @@ class EquipmentItem extends Model
         'description',
         'brand',
         'notes',
-        'imageurl'
+        'imageurl',
+        'internal_registration_number',
+        'model',
+        'size_type_id',
+        'age_id'
     ];
 
     public function equipmentType(){
@@ -27,7 +31,11 @@ class EquipmentItem extends Model
     public function equipmentState(){
         return $this->belongsTo(EquipmentState::class, 'equipment_state_id');
     }
-    public function gender(){
-        return $this->belongsTo(Gender::class);
+    public function age(){
+        return $this->belongsTo(Age::class);
+    }
+
+    public function reservedEquipments(){
+        return $this->belongsToMany(EquipmentItem::class);
     }
 }

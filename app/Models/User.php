@@ -50,4 +50,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function userType(){
+        return $this->belongsTo(UserType::class);
+    }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class);
+    }
 }
