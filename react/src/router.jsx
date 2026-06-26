@@ -10,6 +10,8 @@ import Sports from "./views/Sports.jsx";
 import Women from "./views/Women.jsx";
 import Men from "./views/Men.jsx";
 import Kids from "./views/Kids.jsx";
+import EquipmentList from "./views/EquipmentList.jsx";
+import SportEquipment from "./views/SportEquipment.jsx"
 
 const router = createBrowserRouter([
     {
@@ -43,7 +45,14 @@ const router = createBrowserRouter([
             {
                 path: '/kids',
                 element: <Kids />
-            }
+            },
+            {
+                path: '/items',
+                element: <EquipmentList />
+            },
+            {
+                path: '/sports/:id',
+                element: <SportEquipment /> }
         ],
     },
     {

@@ -20,6 +20,7 @@ export default function AddItems() {
     const [size, setSize] = useState("");
     const [description, setDescription] = useState("");
     const [brand, setBrand] = useState("");
+    const [model, setModel] = useState("");
     const [price, setPrice] = useState("");
 
     const [serialNumber, setSerialNumber] = useState("");
@@ -71,7 +72,6 @@ export default function AddItems() {
         const formData = new FormData();
 
         formData.append("equipment_type_id", equipmentType);
-        formData.append("sport_id", sport);
         formData.append("equipment_state_id", condition);
         formData.append("age_id", age);
 
@@ -83,6 +83,8 @@ export default function AddItems() {
 
         formData.append("description", description);
         formData.append("brand", brand);
+        formData.append("model", model);
+        formData.append("size_type_id", "1");
         formData.append("notes", notes);
         formData.append("internal_registration_number", internalRegNumber);
 
@@ -288,6 +290,17 @@ export default function AddItems() {
                         className="form-control"
                         value={brand}
                         onChange={(e) => setBrand(e.target.value)}
+                    />
+                </div>
+
+                {/* MODEL */}
+                <div className="mb-3">
+                    <label className="form-label">Model</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={model}
+                        onChange={(e) => setModel(e.target.value)}
                     />
                 </div>
 

@@ -1,14 +1,35 @@
-export default function EquipmentCard({item}) {
+export default function EquipmentCard({ item }) {
     return (
         <div className="card h-100">
-            <img src={item.image} className="card-img-top" alt={item.name} />
+            <img
+                src={`http://localhost:8000/storage/${item.imageurl}`}
+                className="card-img-top"
+                alt={item.name}
+            />
 
             <div className="card-body">
                 <h5 className="card-title">{item.name}</h5>
-                <p className="card-text">{item.model}</p>
-                <p className="card-text">Price: {item.price}</p>
+
+                <p className="card-text">
+                    Model: {item.model}
+                </p>
+
+                <p className="card-text">
+                    Brand: {item.brand}
+                </p>
+
+                <p className="card-text">
+                    Price: {item.price} KM
+                </p>
+
+                <p className="card-text">
+                    Status: {item.equipment_state?.name}
+                </p>
+
+                <p className="card-text">
+                    Type: {item.equipment_type?.name}
+                </p>
             </div>
         </div>
     );
 }
-

@@ -17,6 +17,7 @@ Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/additems', [EquipmentItemController::class, 'store']);
+Route::post('/equipment-items', [EquipmentItemController::class, 'store']);
 
 
 Route::get('/sports', [SportController::class, 'index']);
@@ -25,3 +26,8 @@ Route::get('/ages', [AgeController::class, 'index']);
 Route::get('/states', [EquipmentStateController::class, 'index']);
 Route::get('//equipmentTypes/{sportId}', [EquipmentTypeController::class, 'bySport']);
 Route::get('/equipment-items', [EquipmentItemController::class, 'index']);
+Route::get('/equipment-items', [EquipmentItemController::class, 'index']);
+Route::get('/sports', [SportController::class, 'index']);
+Route::get('/sports/{sport}/equipment', [SportController::class, 'equipment']);
+
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

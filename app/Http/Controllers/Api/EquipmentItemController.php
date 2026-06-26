@@ -9,14 +9,13 @@ use Illuminate\Http\Request;
 class EquipmentItemController extends Controller
 {
     public function index(){
-        return EquipmentItem::with(['equipmentType', 'state'])->get();
+        return EquipmentItem::with(['equipmentType', 'equipmentState'])->get();
     }
 
     public function store(Request $request)
     {
         $validated = $request->validate([
             'equipment_type_id' => 'required|exists:equipment_types,id',
-            'sport_id' => 'required|exists:sports,id',
             'equipment_state_id' => 'required|exists:equipment_states,id',
             'age_id' => 'required|exists:ages,id',
 
@@ -30,6 +29,8 @@ class EquipmentItemController extends Controller
 
             'description' => 'nullable|string',
             'brand' => 'nullable|string',
+            'model' => 'nullable|string',
+            'size_type_id' => 'required|exists:size_types,id',
             'notes' => 'nullable|string',
 
             'imageurl' => 'nullable|file|image||mimes:jpeg,png,jpg'

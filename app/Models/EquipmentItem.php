@@ -8,7 +8,6 @@ class EquipmentItem extends Model
 {
     protected $fillable = [
         'equipment_type_id',
-        'sport_id',
         'equipment_state_id',
         'name',
         'serial_number',
