@@ -1,6 +1,19 @@
+import { useNavigate } from "react-router-dom";
+
 export default function EquipmentCard({ item }) {
+
+    const navigate = useNavigate();
+
     return (
-        <div className="card h-100">
+        <div
+            className="card h-100"
+            style={{ cursor: "pointer" }}
+            onClick={() =>
+                navigate(`/equipment/${item.id}`, {
+                    state: { item }
+                })
+            }
+        >
             <img
                 src={`http://localhost:8000/storage/${item.imageurl}`}
                 className="card-img-top"

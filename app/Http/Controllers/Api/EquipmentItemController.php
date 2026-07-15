@@ -8,7 +8,8 @@ use Illuminate\Http\Request;
 
 class EquipmentItemController extends Controller
 {
-    public function index(){
+    public function index()
+    {
         return EquipmentItem::with(['equipmentType', 'equipmentState'])->get();
     }
 
@@ -44,4 +45,41 @@ class EquipmentItemController extends Controller
 
         return EquipmentItem::create($validated);
     }
+
+    public function searchAll(Request $request)
+    {
+        $query = EquipmentItem::with([
+            'equipmentType',
+            'equipmentState'
+        ]);
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->whereLike('name', "%{$search}%")
+                    ->orWhereLike('model', "%{$search}%")
+                    ->orWhereLike('brand', "%{$search}%")
+                    ->orWhereHas('equipmentType', function ($typeQuery) use ($search) {
+                        $typeQuery->whereLike('name', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($request->filled('sport')) {
+
+            $query->whereHas('equipmentType', function ($q) use ($request) {
+                $q->where('sport_id', $request->sport);
+            });
+        }
+
+        if ($request->filled('age')) {
+
+            $query->where('age_id', $request->age);
+
+        }
+
+        return $query->get();
+    }
+
 }

@@ -28,6 +28,7 @@ Route::get('//equipmentTypes/{sportId}', [EquipmentTypeController::class, 'bySpo
 Route::get('/equipment-items', [EquipmentItemController::class, 'index']);
 Route::get('/equipment-items', [EquipmentItemController::class, 'index']);
 Route::get('/sports', [SportController::class, 'index']);
-Route::get('/sports/{sport}/equipment', [SportController::class, 'equipment']);
+Route::get('/sports/{id}/equipment', [SportController::class, 'getEquipment']);
+Route::get('/equipment', [EquipmentItemController::class, 'searchAll']);
 
 Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);

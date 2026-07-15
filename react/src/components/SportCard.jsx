@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 export default function SportCard({ sport }) {
     return (
         <Link
-            to={`/sports/${sport.id}`}
+            to={`/equipment?sport=${sport.id}`}
             state={{ sportName: sport.name }}
             className="text-decoration-none text-dark"
         >

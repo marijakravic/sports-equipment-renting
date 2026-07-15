@@ -6,13 +6,14 @@ import "../index.css";
 import Navbar from "../contexts/NavBar.jsx";
 import cartIcon from "../icons/basket.png";
 import userIcon from "../icons/user2.png";
-import { useEffect } from "react";
 import * as bootstrap from "bootstrap";
 import axiosClient from "../axios-client";
+import { useState, useEffect } from "react";
 
 export default function DefaultLayout() {
     const {token, setToken} = useStateContext();
     const navigate = useNavigate();
+    const [search, setSearch] = useState("");
 
     useEffect(() => {
         const tooltipTriggerList = document.querySelectorAll(
@@ -48,13 +49,9 @@ export default function DefaultLayout() {
                 )}
 
                 <Link to="/sports">Sportovi</Link>
-                <Link to="/men">Muškarci</Link>
-                <Link to="/women">Žene</Link>
-                <Link to="/items">Items</Link>
+                <Link to="/adults">Odrasli</Link>
+                <Link to="/kids">Djeca</Link>
 
-                {!token && (
-                    <Link to="/kids">Djeca</Link>
-                )}
             </aside>
 
             <div className="content">
@@ -107,10 +104,13 @@ export default function DefaultLayout() {
                     </div>
                 </header>
 
-                <Navbar/>
+                <Navbar
+   //                 search={search}
+     //               setSearch={setSearch}
+                />
 
                 <main>
-                    <Outlet/>
+                    <Outlet context={{ search }} />
                 </main>
             </div>
         </div>

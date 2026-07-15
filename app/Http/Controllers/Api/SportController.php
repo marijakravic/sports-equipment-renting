@@ -24,12 +24,29 @@ class SportController extends Controller
         ]);
     }
 
-    public function equipment($sportId)
+    public function getEquipment(Request $request, $sportId)
     {
-        return EquipmentItem::with(['equipmentType', 'equipmentState'])
-            ->whereHas('equipmentType', function ($query) use ($sportId) {
-                $query->where('sport_id', $sportId);
-            })
-            ->get();
+        $query = EquipmentItem::with([
+            'equipmentType',
+            'equipmentState'
+        ])
+            ->whereHas('equipmentType', function ($q) use ($sportId) {
+                $q->where('sport_id', $sportId);
+            });
+
+        if ($request->filled('search')) {
+            $search = $request->get('search');
+
+            $query->where(function ($q) use ($search) {
+                $q->whereLike('name', "%{$search}%")
+                    ->orWhereLike('model', "%{$search}%")
+                    ->orWhereLike('brand', "%{$search}%")
+                    ->orWhereHas('equipmentType', function ($typeQuery) use ($search) {
+                        $typeQuery->whereLike('name', "%{$search}%");
+                    });
+            });
+        }
+
+        return $query->get();
     }
 }
