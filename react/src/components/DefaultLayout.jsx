@@ -90,6 +90,7 @@ export default function DefaultLayout() {
                                 }}
                                 data-bs-toggle="tooltip"
                                 data-bs-title="Korpa"
+                                onClick={() => navigate("/basket")}
                             />
 
                             {token && (
@@ -104,11 +105,7 @@ export default function DefaultLayout() {
                     </div>
                 </header>
 
-                <Navbar
-   //                 search={search}
-     //               setSearch={setSearch}
-                />
-
+                <Navbar/>
                 <main>
                     <Outlet context={{ search }} />
                 </main>

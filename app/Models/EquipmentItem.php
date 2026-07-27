@@ -33,7 +33,6 @@ class EquipmentItem extends Model
     public function age(){
         return $this->belongsTo(Age::class);
     }
-
     public function reservedEquipments(){
         return $this->belongsToMany(EquipmentItem::class);
     }

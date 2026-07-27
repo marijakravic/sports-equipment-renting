@@ -7,13 +7,13 @@ import DefaultLayout from "./components/DefaultLayout.jsx";
 import GuestLayout from "./components/GuestLayout.jsx";
 import Dashboard from "./views/Dashboard.jsx";
 import Sports from "./views/Sports.jsx";
-import Women from "./views/Women.jsx";
 import Adults from "./views/Adults.jsx";
 import Kids from "./views/Kids.jsx";
 import EquipmentList from "./views/EquipmentList.jsx";
 import SportEquipment from "./views/SportEquipment.jsx"
 import SearchResults from "./views/SearchResults.jsx";
 import EquipmentDetails from "./views/EquipmentDetails.jsx";
+import Basket from "./views/Basket.jsx";
 
 const router = createBrowserRouter([
     {
@@ -58,6 +58,10 @@ const router = createBrowserRouter([
             },
             {   path: '/equipment/:id',
                 element: <EquipmentDetails />
+            },
+            {
+                path: '/basket',
+                element: <Basket/>
             }
         ],
     },

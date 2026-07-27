@@ -1,8 +1,11 @@
 import {useLocation} from "react-router-dom";
+import { useBasket } from "../contexts/BasketContext.jsx";
 
 export default function EquipmentDetails() {
     const {state} = useLocation();
     const item = state?.item;
+    const { addToBasket, basket } = useBasket();
+    console.log(basket);
 
     if (!item) {
         return (<div className="container mt-5">
@@ -31,28 +34,13 @@ export default function EquipmentDetails() {
                 <p><strong>Description:</strong></p>
                 <p>{item.description}</p>
                 <hr/>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">
-                            Reservation from
-                        </label>
-                        <input
-                            type="date"
-                            className="form-control"
-                        />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label className="form-label">
-                            Reservation to
-                        </label>
-                        <input
-                            type="date"
-                            className="form-control"
-                        />
-                    </div>
-                </div>
-                <button className="btn btn-primary">
-                    Rezerviši
+                <button
+                    onClick={() => {
+                        addToBasket(item.id);
+                        console.log("Added:", item.id);
+                    }}
+                >
+                    Add to Basket
                 </button>
 
             </div>

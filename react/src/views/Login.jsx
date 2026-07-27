@@ -36,9 +36,9 @@ export default function Login() {
                     <input ref={emailRef} type="email" placeholder="Email"/>
                     <input ref={passwordRef} type="password" placeholder="Lozinka"/>
                     <button className="btn btn-block">Prijavi se</button>
-                    <p className="message">
+                    {/*<p className="message">
                         Niste registrovani? <Link to="/signup">Kreiraj nalog</Link>
-                    </p>
+                    </p>*/}
                 </form>
             </div>
         </div>

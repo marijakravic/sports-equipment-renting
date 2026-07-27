@@ -65,21 +65,29 @@ class EquipmentItemController extends Controller
                     });
             });
         }
-
         if ($request->filled('sport')) {
 
             $query->whereHas('equipmentType', function ($q) use ($request) {
                 $q->where('sport_id', $request->sport);
             });
         }
-
         if ($request->filled('age')) {
 
             $query->where('age_id', $request->age);
 
         }
-
         return $query->get();
     }
 
+    public function basketItems(Request $request)
+    {
+        $ids = $request->input('ids', []);
+
+        return EquipmentItem::with([
+            'equipmentType.sport',
+            'equipmentState'
+        ])
+            ->whereIn('id', $ids)
+            ->get();
+    }
 }

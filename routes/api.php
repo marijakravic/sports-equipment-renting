@@ -18,6 +18,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/logout', [AuthController::class, 'logout']);
 Route::post('/additems', [EquipmentItemController::class, 'store']);
 Route::post('/equipment-items', [EquipmentItemController::class, 'store']);
+Route::post('/basket', [EquipmentItemController::class, 'basketItems']);
 
 
 Route::get('/sports', [SportController::class, 'index']);
