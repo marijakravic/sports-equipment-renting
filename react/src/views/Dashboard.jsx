@@ -23,6 +23,7 @@ export default function Dashboard() {
     const {user} = useStateContext();
     const [equipment, setEquipment] = useState([]);
     const [sports, setSports] = useState([]);
+    const [reservations, setReservations] = useState([]);
     const [loading, setLoading] = useState(true);
 
 
@@ -30,18 +31,23 @@ export default function Dashboard() {
         Promise.all([
             axiosClient.get("/equipment-items"),
             axiosClient.get("/sports"),
+            user?.role === "admin" ? axiosClient.get("/reservations") : Promise.resolve({data: []}),
         ])
-            .then(([equipmentRes, sportsRes]) => {
+            .then(([equipmentRes, sportsRes, reservationRes]) => {
                 setEquipment(equipmentRes.data);
                 setSports(sportsRes.data);
+                setReservations(reservationRes.data);
             })
             .catch(console.error)
             .finally(() => setLoading(false));
-    }, []);
+    }, [user?.role]);
 
     const available = equipment.filter(isAvailable).length;
     const damaged = equipment.filter(isDamaged).length;
     const recent = [...equipment].sort((a, b) => b.id - a.id).slice(0, 5);
+    const activeReservations = reservations.filter((reservation) => reservation.reservation_state?.name === "Aktivna");
+    const rentedItems = Object.values(reservations.filter((reservation) => reservation.reservation_state?.name !== "Otkazana").flatMap((reservation) => reservation.reserved_equipments || []).reduce((items, item) => { items[item.id] = items[item.id] || {id: item.id, name: item.name, count: 0}; items[item.id].count += 1; return items; }, {})).sort((first, second) => second.count - first.count).slice(0, 5);
+    const monthlyRevenue = Array.from({length: 6}, (_, index) => { const date = new Date(); date.setDate(1); date.setMonth(date.getMonth() - (5 - index)); const key = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`; return {label: date.toLocaleDateString("sr-Latn-BA", {month: "short"}), total: reservations.filter((reservation) => reservation.payment_status === "paid" && (reservation.completed_at || reservation.return_date || "").slice(0, 7) === key).reduce((total, reservation) => total + Number(reservation.total_price || 0), 0)}; });
 
     const today = new Date().toLocaleDateString("sr-Latn-BA", {
         weekday: "long", day: "numeric", month: "long"
@@ -59,6 +65,8 @@ export default function Dashboard() {
                     <p className="dash-hero-sub">Pregled stanja inventara i brze akcije za tim.</p>
                 </div>
             </div>
+
+            {user?.role === "admin" && <DashboardAnalytics loading={loading} activeReservations={activeReservations} rentedItems={rentedItems} monthlyRevenue={monthlyRevenue}/>} 
 
             <div className="dash-kpis">
                 <div className="dash-kpi">
@@ -135,4 +143,9 @@ export default function Dashboard() {
             </div>
         </div>
     );
+}
+
+function DashboardAnalytics({loading, activeReservations, rentedItems, monthlyRevenue}) {
+    const revenueMax = Math.max(...monthlyRevenue.map((month) => month.total), 1);
+    return <section className="dash-analytics"><div className="dash-panel dash-active-rentals"><div className="dash-panel-head"><h2>Aktivni najmovi</h2></div><div className="dash-active-value">{loading ? "—" : activeReservations.length}</div><p>Rezervacije koje su trenutno aktivne.</p></div><div className="dash-panel"><div className="dash-panel-head"><h2>Najiznajmljenija oprema</h2></div>{loading ? <p className="dash-empty">Učitavanje...</p> : rentedItems.length === 0 ? <p className="dash-empty">Još nema podataka o najmu.</p> : <div className="dash-ranking">{rentedItems.map((item, index) => <div className="dash-ranking-row" key={item.id}><span className="dash-rank">{index + 1}</span><span>{item.name}</span><strong>{item.count}×</strong></div>)}</div>}</div><div className="dash-panel dash-revenue-chart"><div className="dash-panel-head"><h2>Plaćeni prihod po mjesecu</h2></div>{loading ? <p className="dash-empty">Učitavanje...</p> : <div className="dash-bars">{monthlyRevenue.map((month) => <div className="dash-bar-column" key={month.label}><span className="dash-bar-value">{month.total ? `${month.total.toFixed(0)} KM` : "—"}</span><div className="dash-bar-track"><span className="dash-bar" style={{height: `${(month.total / revenueMax) * 100}%`}}/></div><span className="dash-bar-label">{month.label}</span></div>)}</div>}</div></section>;
 }
