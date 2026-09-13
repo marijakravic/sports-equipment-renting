@@ -1,124 +1,36 @@
-import {useState} from "react";
-import {useLocation, useNavigate} from "react-router-dom";
-import { useBasket } from "../contexts/BasketContext.jsx";
+import {useEffect, useState} from "react";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useBasket} from "../contexts/BasketContext.jsx";
+import axiosClient from "../axios-client.js";
 
-const STATE_STYLES = {
-    Available: { label: "Dostupno", className: "chip-success" },
-    Dostupno: { label: "Dostupno", className: "chip-success" },
-    Damaged: { label: "Oštećeno", className: "chip-warning" },
-    Oštećeno: { label: "Oštećeno", className: "chip-warning" },
-    WrittenOff: { label: "Otpisano", className: "chip-danger" },
-    Otpisano: { label: "Otpisano", className: "chip-danger" },
-    Otpisana: { label: "Otpisano", className: "chip-danger" },
-};
+const STATE_STYLES = {Available: {label: "Dostupno", className: "chip-success"}, Dostupno: {label: "Dostupno", className: "chip-success"}, Damaged: {label: "Oštećeno", className: "chip-warning"}, Oštećeno: {label: "Oštećeno", className: "chip-warning"}, WrittenOff: {label: "Otpisano", className: "chip-danger"}, Otpisano: {label: "Otpisano", className: "chip-danger"}, Otpisana: {label: "Otpisano", className: "chip-danger"}};
+const RESERVATION_LABELS = {Zatrazena: "Zatražena", Aktivna: "Aktivna", Otkazana: "Otkazana", Zavrsena: "Završena"};
+const MONTHS = ["Januar", "Februar", "Mart", "April", "Maj", "Juni", "Juli", "August", "Septembar", "Oktobar", "Novembar", "Decembar"];
+const WEEKDAYS = ["Pon", "Uto", "Sri", "Čet", "Pet", "Sub", "Ned"];
+const toDateKey = (date) => `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+const formatDate = (date) => date ? new Date(date).toLocaleDateString("sr-Latn-BA", {day: "2-digit", month: "2-digit", year: "numeric"}) : "—";
 
 export default function EquipmentDetails() {
-    const {state} = useLocation();
-    const navigate = useNavigate();
-    const item = state?.item;
-    const { addToBasket } = useBasket();
-    const [added, setAdded] = useState(false);
+    const {id} = useParams(); const {state} = useLocation(); const navigate = useNavigate(); const {addToBasket} = useBasket();
+    const [item, setItem] = useState(state?.item || null); const [loading, setLoading] = useState(!state?.item); const [error, setError] = useState(""); const [added, setAdded] = useState(false); const [calendarDate, setCalendarDate] = useState(() => new Date());
+    useEffect(() => { axiosClient.get(`/equipment-items/${id}`).then(({data}) => setItem(data)).catch(() => { setItem(null); setError("Oprema nije pronađena."); }).finally(() => setLoading(false)); }, [id]);
+    if (loading && !item) return <div className="detail-empty"><p>Učitavanje opreme...</p></div>;
+    if (!item) return <div className="detail-empty"><h3>{error || "Oprema nije pronađena."}</h3><button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Nazad</button></div>;
+    const equipmentState = item.equipment_state?.name ? STATE_STYLES[item.equipment_state.name] || {label: item.equipment_state.name, className: "chip-neutral"} : null;
+    const isWrittenOff = ["WrittenOff", "Otpisano", "Otpisana"].includes(item.equipment_state?.name); const isOccupied = Boolean(item.is_occupied); const isUnavailable = isWrittenOff || isOccupied;
+    const detailStatus = isOccupied ? {label: "Zauzeto", className: "chip-neutral"} : equipmentState;
+    const specs = [{label: "Vrsta", value: item.equipment_type?.name}, {label: "Brend", value: item.brand}, {label: "Model", value: item.model}, {label: "Veličina", value: item.size}, {label: "Serijski broj", value: item.serial_number}, {label: "Barkod", value: item.barcode}, {label: "Interni broj", value: item.internal_registration_number}].filter((row) => row.value);
+    const handleAdd = () => { if (isUnavailable) return; addToBasket(item.id); setAdded(true); setTimeout(() => setAdded(false), 1800); };
+    return <div className="detail-page"><button className="detail-back" onClick={() => navigate(-1)}>← Nazad</button><div className={`detail-card ${isWrittenOff ? "detail-card-unavailable" : ""}`}><div className="detail-media">{item.imageurl ? <img src={`http://localhost:8000/storage/${item.imageurl}`} alt={item.name}/> : <div className="detail-media-placeholder">Oprema nema sliku</div>}</div><div className="detail-info"><div className="detail-header">{detailStatus && <span className={`chip ${detailStatus.className}`}>{detailStatus.label}</span>}{item.equipment_type?.name && <span className="detail-eyebrow">{item.equipment_type.name}</span>}<h1 className="detail-title">{item.name}</h1><div className="detail-price">{Number(item.price).toFixed(2)} KM<span> / dan</span></div></div>{item.description && <p className="detail-description">{item.description}</p>}<div className="detail-specs">{specs.map((row) => <div className="detail-spec-row" key={row.label}><span className="detail-spec-label">{row.label}</span><span className="detail-spec-value">{row.value}</span></div>)}</div>{item.notes && <p className="detail-notes"><strong>Napomena:</strong> {item.notes}</p>}<button className={`btn btn-primary detail-cta ${added ? "detail-cta-added" : ""}`} onClick={handleAdd} disabled={isUnavailable}>{isUnavailable ? (isOccupied ? "Oprema je trenutno zauzeta." : "Oprema je otpisana i nije dostupna za najam.") : added ? "Dodato u korpu ✓" : "Dodaj u korpu"}</button></div></div><section className="equipment-availability"><AvailabilityCalendar reservations={item.reservation_history || []} calendarDate={calendarDate} setCalendarDate={setCalendarDate}/><ReservationHistory reservations={item.reservation_history || []}/></section></div>;
+}
 
-    if (!item) {
-        return (
-            <div className="detail-empty">
-                <h3>Oprema nije pronađena.</h3>
-                <button className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Nazad</button>
-            </div>
-        );
-    }
+function AvailabilityCalendar({reservations, calendarDate, setCalendarDate}) {
+    const year = calendarDate.getFullYear(); const month = calendarDate.getMonth(); const firstWeekday = (new Date(year, month, 1).getDay() + 6) % 7; const daysInMonth = new Date(year, month + 1, 0).getDate(); const today = toDateKey(new Date());
+    const isReserved = (dateKey) => reservations.some((reservation) => reservation.reservation_state?.name !== "Otkazana" && dateKey >= reservation.reservation_date.slice(0, 10) && dateKey <= reservation.return_date.slice(0, 10));
+    const cells = [...Array(firstWeekday).fill(null), ...Array.from({length: daysInMonth}, (_, index) => index + 1)];
+    return <div className="availability-card"><div className="availability-heading"><div><h2>Dostupnost opreme</h2></div><div className="availability-nav"><button type="button" aria-label="Prethodni mjesec" onClick={() => setCalendarDate(new Date(year, month - 1, 1))}>‹</button><strong>{MONTHS[month]} {year}</strong><button type="button" aria-label="Sljedeći mjesec" onClick={() => setCalendarDate(new Date(year, month + 1, 1))}>›</button></div></div><div className="availability-calendar">{WEEKDAYS.map((day) => <span className="availability-weekday" key={day}>{day}</span>)}{cells.map((day, index) => { if (!day) return <span className="availability-day availability-day-empty" key={`empty-${index}`}/>; const dateKey = `${year}-${String(month + 1).padStart(2, "0")}-${String(day).padStart(2, "0")}`; const unavailable = dateKey < today || isReserved(dateKey); return <span className={`availability-day ${unavailable ? "availability-day-unavailable" : "availability-day-available"}`} key={dateKey} title={unavailable ? "Nije dostupno" : "Dostupno"}>{day}</span>; })}</div></div>;
+}
 
-    const equipmentState = item.equipment_state?.name
-        ? STATE_STYLES[item.equipment_state.name] || { label: item.equipment_state.name, className: "chip-neutral" }
-        : null;
-    const isWrittenOff = ["WrittenOff", "Otpisano", "Otpisana"].includes(item.equipment_state?.name);
-    const isOccupied = Boolean(item.is_occupied);
-    const isUnavailable = isWrittenOff || isOccupied;
-    const unavailableMessage = isOccupied ? "Oprema je trenutno zauzeta." : "Oprema je otpisana i nije dostupna za najam.";
-    const detailStatus = isOccupied
-        ? { label: "Zauzeto", className: "chip-neutral" }
-        : equipmentState;
-
-    const specs = [
-        { label: "Vrsta", value: item.equipment_type?.name },
-        { label: "Brend", value: item.brand },
-        { label: "Model", value: item.model },
-        { label: "Veličina", value: item.size },
-        { label: "Serijski broj", value: item.serial_number },
-        { label: "Barkod", value: item.barcode },
-    ].filter(row => row.value);
-
-    const handleAdd = () => {
-        if (isUnavailable) return;
-
-        addToBasket(item.id);
-        setAdded(true);
-        setTimeout(() => setAdded(false), 1800);
-    };
-
-    return (
-        <div className="detail-page">
-            <button className="detail-back" onClick={() => navigate(-1)}>
-                <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                Nazad
-            </button>
-
-            <div className={`detail-card ${isWrittenOff ? "detail-card-unavailable" : ""}`}>
-                <div className="detail-media">
-                    {item.imageurl ? (
-                        <img
-                            src={`http://localhost:8000/storage/${item.imageurl}`}
-                            alt={item.name}
-                        />
-                    ) : (
-                        <div className="detail-media-placeholder">
-                            <svg viewBox="0 0 24 24" fill="none" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>
-                        </div>
-                    )}
-                </div>
-
-                <div className="detail-info">
-                    <div className="detail-header">
-                        {detailStatus && (
-                            <span className={`chip ${detailStatus.className}`}>{detailStatus.label}</span>
-                        )}
-                        {item.equipment_type?.name && (
-                            <span className="detail-eyebrow">{item.equipment_type.name}</span>
-                        )}
-                        <h1 className="detail-title">{item.name}</h1>
-                        <div className="detail-price">
-                            {Number(item.price).toFixed(2)} KM<span> / dan</span>
-                        </div>
-                    </div>
-
-                    {item.description && (
-                        <p className="detail-description">{item.description}</p>
-                    )}
-
-                    <div className="detail-specs">
-                        {specs.map(row => (
-                            <div className="detail-spec-row" key={row.label}>
-                                <span className="detail-spec-label">{row.label}</span>
-                                <span className="detail-spec-value">{row.value}</span>
-                            </div>
-                        ))}
-                    </div>
-
-                    {item.notes && (
-                        <p className="detail-notes">
-                            <strong>Napomena:</strong> {item.notes}
-                        </p>
-                    )}
-
-                    <button
-                        className={`btn btn-primary detail-cta ${added ? "detail-cta-added" : ""}`}
-                        onClick={handleAdd}
-                        disabled={isUnavailable}
-                    >
-                        {isUnavailable ? unavailableMessage : added ? "Dodato u korpu ✓" : "Dodaj u korpu"}
-                    </button>
-                </div>
-            </div>
-        </div>
-    );
+function ReservationHistory({reservations}) {
+    return <div className="availability-card"><div className="availability-heading"><div><h2>Istorija rezervacija</h2><p>Prethodne i trenutne rezervacije ove stavke.</p></div></div>{reservations.length === 0 ? <p className="availability-empty">Oprema još nije bila rezervisana.</p> : <div className="availability-history">{reservations.map((reservation) => <div className="availability-history-row" key={reservation.id}><span><strong>Rezervacija #{reservation.id}</strong><small>{formatDate(reservation.reservation_date)} – {formatDate(reservation.return_date)}</small></span><span className="chip chip-neutral">{RESERVATION_LABELS[reservation.reservation_state?.name] || reservation.reservation_state?.name || "—"}</span></div>)}</div>}</div>;
 }

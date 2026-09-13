@@ -1123,3 +1123,23 @@ table > tbody > tr > td {
 .profile-card dd { margin: 3px 0 0; font-weight: 600; }
 .reservation-worker { margin-top: 5px !important; font-size: 12px !important; }
 @media (max-width: 640px) { .profile-card dl { grid-template-columns: 1fr; } }
+
+/* Equipment availability */
+.equipment-availability { display: grid; grid-template-columns: 1.25fr .9fr; gap: 18px; margin-top: 20px; }
+.availability-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px; }
+.availability-heading { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 14px; }
+.availability-heading h2 { font-size: 16px; margin: 0 0 3px; }
+.availability-heading p { font-size: 12px; color: var(--text-secondary); margin: 0; }
+.availability-nav { display: flex; align-items: center; gap: 8px; font-size: 13px; white-space: nowrap; }
+.availability-nav button { width: 28px; height: 28px; border: 1px solid var(--border); border-radius: 7px; background: var(--surface); color: var(--text-primary); font-size: 20px; line-height: 1; }
+.availability-calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
+.availability-weekday { text-align: center; font-size: 11px; color: var(--text-muted); font-weight: 600; padding-bottom: 3px; }
+.availability-day { display: grid; place-items: center; min-height: 34px; border-radius: 7px; font-size: 12px; font-weight: 600; }
+.availability-day-available { background: #f4d4a2; color: #704214; }
+.availability-day-unavailable { background: #d9dcda; color: #646b66; }
+.availability-history { border-top: 1px solid var(--border); }
+.availability-history-row { display: flex; justify-content: space-between; gap: 8px; align-items: center; padding: 11px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.availability-history-row:last-child { border-bottom: none; }
+.availability-history-row small { display: block; color: var(--text-secondary); margin-top: 2px; }
+.availability-empty { color: var(--text-muted); font-size: 13px; margin: 18px 0 2px; }
+@media (max-width: 780px) { .equipment-availability { grid-template-columns: 1fr; } .availability-heading { align-items: flex-start; flex-direction: column; } }

@@ -22,12 +22,20 @@ class EquipmentItemController extends Controller
 
     public function show(EquipmentItem $equipmentItem)
     {
-        return $equipmentItem->load($this->equipmentRelations())->loadExists([
+        $equipmentItem->load($this->equipmentRelations())->loadExists([
             'reservations as is_occupied' => fn ($reservationQuery) => $reservationQuery->whereHas(
                 'reservationState',
                 fn ($stateQuery) => $stateQuery->where('name', 'Aktivna')
             ),
         ]);
+
+        $equipmentItem->setAttribute('reservation_history', $equipmentItem->reservations()
+            ->select(['reservations.id', 'reservation_date', 'return_date', 'reservation_state_id'])
+            ->with('reservationState:id,name')
+            ->orderByDesc('reservation_date')
+            ->get());
+
+        return $equipmentItem;
     }
 
     public function store(Request $request)
