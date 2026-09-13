@@ -1,6 +1,12 @@
 import { useState, useEffect } from "react";
 import axiosClient from "../axios-client.js";
 
+const STATE_LABELS = {
+    Available: "Dostupno",
+    Damaged: "Oštećeno",
+    WrittenOff: "Otpisano",
+};
+
 export default function AddItems() {
 
     // ---------------- STATE ----------------
@@ -107,226 +113,234 @@ export default function AddItems() {
 
     // ---------------- UI ----------------
     return (
-        <div className="container mt-5">
-            <h2>Dodaj opremu</h2>
+        <div className="form-card">
+            <h2 className="form-card-title">Dodaj opremu</h2>
+            <p className="form-card-subtitle">Popuni podatke o novoj stavci inventara.</p>
 
             <form onSubmit={handleSubmit}>
+                <div className="form-card-grid">
 
-                {/* NAME */}
-                <div className="mb-3">
-                    <label className="form-label">Naziv opreme</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
-                    />
-                </div>
-
-                {/* SPORT */}
-                <div className="mb-3">
-                    <label className="form-label">Sport</label>
-                    <select
-                        className="form-control"
-                        value={sport}
-                        onChange={(e) => setSport(e.target.value)}
-                    >
-                        <option value="">Izaberi sport</option>
-                        {sports.map((s) => (
-                            <option key={s.id} value={s.id}>
-                                {s.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* EQUIPMENT TYPE */}
-                <div className="mb-3">
-                    <label className="form-label">Vrsta opreme</label>
-                    <select
-                        className="form-control"
-                        value={equipmentType}
-                        onChange={(e) => {
-                            setEquipmentType(e.target.value);
-                            setSize("");
-                        }}
-                    >
-                        <option value="">Izaberi vrstu opreme</option>
-                        {equipmentTypes.map((eq) => (
-                            <option key={eq.id} value={eq.id}>
-                                {eq.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* AGE */}
-                <div className="mb-3">
-                    <label className="form-label">Uzrast</label>
-                    <select
-                        className="form-control"
-                        value={age}
-                        onChange={(e) => setAge(e.target.value)}
-                    >
-                        <option value="">Izaberi uzrast</option>
-                        {ages.map((a) => (
-                            <option key={a.id} value={a.id}>
-                                {a.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* SIZE */}
-                {availableSizes.length > 0 && (
-                    <div className="mb-3">
-                        <label className="form-label">Veličina</label>
-
-                        {availableSizes.length > 5 ? (
-                            <select
-                                className="form-control"
-                                value={size}
-                                onChange={(e) => setSize(e.target.value)}
-                            >
-                                <option value="">Izaberi veličinu</option>
-                                {availableSizes.map((s) => (
-                                    <option key={s} value={s}>{s}</option>
-                                ))}
-                            </select>
-                        ) : (
-                            <div className="d-flex gap-4">
-                                {availableSizes.map((s) => (
-                                    <label key={s}>
-                                        <input
-                                            type="radio"
-                                            name="size"
-                                            value={s}
-                                            checked={size === s}
-                                            onChange={(e) => setSize(e.target.value)}
-                                        />
-                                        {" "}{s}
-                                    </label>
-                                ))}
-                            </div>
-                        )}
+                    {/* NAME */}
+                    <div className="form-card-field full">
+                        <label>Naziv opreme</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={name}
+                            onChange={(e) => setName(e.target.value)}
+                        />
                     </div>
-                )}
 
-                {/* SERIAL */}
-                <div className="mb-3">
-                    <label className="form-label">Serijski broj</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={serialNumber}
-                        onChange={(e) => setSerialNumber(e.target.value)}
-                    />
+                    {/* SPORT */}
+                    <div className="form-card-field">
+                        <label>Sport</label>
+                        <select
+                            className="form-control"
+                            value={sport}
+                            onChange={(e) => setSport(e.target.value)}
+                        >
+                            <option value="">Izaberi sport</option>
+                            {sports.map((s) => (
+                                <option key={s.id} value={s.id}>
+                                    {s.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* EQUIPMENT TYPE */}
+                    <div className="form-card-field">
+                        <label>Vrsta opreme</label>
+                        <select
+                            className="form-control"
+                            value={equipmentType}
+                            onChange={(e) => {
+                                setEquipmentType(e.target.value);
+                                setSize("");
+                            }}
+                        >
+                            <option value="">Izaberi vrstu opreme</option>
+                            {equipmentTypes.map((eq) => (
+                                <option key={eq.id} value={eq.id}>
+                                    {eq.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* AGE */}
+                    <div className="form-card-field">
+                        <label>Uzrast</label>
+                        <select
+                            className="form-control"
+                            value={age}
+                            onChange={(e) => setAge(e.target.value)}
+                        >
+                            <option value="">Izaberi uzrast</option>
+                            {ages.map((a) => (
+                                <option key={a.id} value={a.id}>
+                                    {a.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* STATE */}
+                    <div className="form-card-field">
+                        <label>Stanje</label>
+                        <select
+                            className="form-control"
+                            value={condition}
+                            onChange={(e) => setCondition(e.target.value)}
+                        >
+                            <option value="">Izaberi stanje</option>
+                            {states.map((s) => (
+                                <option key={s.id} value={s.id}>
+                                    {STATE_LABELS[s.name] || s.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* SIZE */}
+                    {availableSizes.length > 0 && (
+                        <div className="form-card-field full">
+                            <label>Veličina</label>
+
+                            {availableSizes.length > 5 ? (
+                                <select
+                                    className="form-control"
+                                    value={size}
+                                    onChange={(e) => setSize(e.target.value)}
+                                >
+                                    <option value="">Izaberi veličinu</option>
+                                    {availableSizes.map((s) => (
+                                        <option key={s} value={s}>{s}</option>
+                                    ))}
+                                </select>
+                            ) : (
+                                <div className="form-card-sizes">
+                                    {availableSizes.map((s) => (
+                                        <label
+                                            key={s}
+                                            className={`form-card-size-option ${size === s ? "selected" : ""}`}
+                                        >
+                                            <input
+                                                type="radio"
+                                                name="size"
+                                                value={s}
+                                                checked={size === s}
+                                                onChange={(e) => setSize(e.target.value)}
+                                            />
+                                            {s}
+                                        </label>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
+                    {/* SERIAL */}
+                    <div className="form-card-field">
+                        <label>Serijski broj</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={serialNumber}
+                            onChange={(e) => setSerialNumber(e.target.value)}
+                        />
+                    </div>
+
+                    {/* BARCODE */}
+                    <div className="form-card-field">
+                        <label>Barkod</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={barcode}
+                            onChange={(e) => setBarcode(e.target.value)}
+                        />
+                    </div>
+
+                    {/* PRICE */}
+                    <div className="form-card-field">
+                        <label>Cijena (KM)</label>
+                        <input
+                            type="number"
+                            className="form-control"
+                            value={price}
+                            onChange={(e) => setPrice(e.target.value)}
+                        />
+                    </div>
+
+                    <div className="form-card-field">
+                        <label>Interni broj</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={internalRegNumber}
+                            onChange={(e) => setInternalRegNumber(e.target.value)}
+                        />
+                    </div>
+
+                    {/* BRAND */}
+                    <div className="form-card-field">
+                        <label>Brend</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={brand}
+                            onChange={(e) => setBrand(e.target.value)}
+                        />
+                    </div>
+
+                    {/* MODEL */}
+                    <div className="form-card-field">
+                        <label>Model</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            value={model}
+                            onChange={(e) => setModel(e.target.value)}
+                        />
+                    </div>
+
+                    {/* DESCRIPTION */}
+                    <div className="form-card-field full">
+                        <label>Opis</label>
+                        <textarea
+                            className="form-control"
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                        />
+                    </div>
+
+                    {/* NOTES */}
+                    <div className="form-card-field full">
+                        <label>Napomena</label>
+                        <textarea
+                            className="form-control"
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                        />
+                    </div>
+
+                    {/* IMAGE */}
+                    <div className="form-card-field full">
+                        <label>Slika</label>
+                        <input
+                            type="file"
+                            className="form-control"
+                            onChange={(e) => setImage(e.target.files[0])}
+                        />
+                    </div>
+
+                    <div className="form-card-actions">
+                        <button className="btn btn-primary">
+                            Unesi opremu
+                        </button>
+                    </div>
                 </div>
-
-                {/* BARCODE */}
-                <div className="mb-3">
-                    <label className="form-label">Barcode</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={barcode}
-                        onChange={(e) => setBarcode(e.target.value)}
-                    />
-                </div>
-
-                {/* PRICE */}
-                <div className="mb-3">
-                    <label className="form-label">Cijena</label>
-                    <input
-                        type="number"
-                        className="form-control"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                </div>
-
-                <div className="mb-3">
-                    <label className="form-label">Interni broj</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={internalRegNumber}
-                        onChange={(e) => setInternalRegNumber(e.target.value)}
-                    />
-                </div>
-
-                {/* STATE */}
-                <div className="mb-3">
-                    <label className="form-label">Stanje</label>
-                    <select
-                        className="form-control"
-                        value={condition}
-                        onChange={(e) => setCondition(e.target.value)}
-                    >
-                        <option value="">Izaberi stanje</option>
-                        {states.map((s) => (
-                            <option key={s.id} value={s.id}>
-                                {s.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                {/* DESCRIPTION */}
-                <div className="mb-3">
-                    <label className="form-label">Opis</label>
-                    <textarea
-                        className="form-control"
-                        value={description}
-                        onChange={(e) => setDescription(e.target.value)}
-                    />
-                </div>
-
-                {/* BRAND */}
-                <div className="mb-3">
-                    <label className="form-label">Brend</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={brand}
-                        onChange={(e) => setBrand(e.target.value)}
-                    />
-                </div>
-
-                {/* MODEL */}
-                <div className="mb-3">
-                    <label className="form-label">Model</label>
-                    <input
-                        type="text"
-                        className="form-control"
-                        value={model}
-                        onChange={(e) => setModel(e.target.value)}
-                    />
-                </div>
-
-                {/* NOTES */}
-                <div className="mb-3">
-                    <label className="form-label">Napomena</label>
-                    <textarea
-                        className="form-control"
-                        value={notes}
-                        onChange={(e) => setNotes(e.target.value)}
-                    />
-                </div>
-
-                {/* IMAGE */}
-                <div className="mb-3">
-                    <label className="form-label">Slika</label>
-                    <input
-                        type="file"
-                        className="form-control"
-                        onChange={(e) => setImage(e.target.files[0])}
-                    />
-                </div>
-
-                <button className="btn btn-primary">
-                    Unesi opremu
-                </button>
             </form>
         </div>
     );

@@ -1,6 +1,5 @@
 import {createBrowserRouter, Navigate} from "react-router-dom";
 import Login from "./views/Login.jsx";
-import Signup from "./views/Signup.jsx";
 import AddItems from "./views/AddItems.jsx";
 import NotFound from "./views/NotFound.jsx";
 import DefaultLayout from "./components/DefaultLayout.jsx";
@@ -14,6 +13,12 @@ import SportEquipment from "./views/SportEquipment.jsx"
 import SearchResults from "./views/SearchResults.jsx";
 import EquipmentDetails from "./views/EquipmentDetails.jsx";
 import Basket from "./views/Basket.jsx";
+import Reservations from "./views/Reservations.jsx";
+import Profile from "./views/Profile.jsx";
+import Workers from "./views/Workers.jsx";
+import AddSport from "./views/AddSport.jsx";
+import EditEquipment from "./views/EditEquipment.jsx";
+import ReservationDetails from "./views/ReservationDetails.jsx";
 
 const router = createBrowserRouter([
     {
@@ -22,7 +27,7 @@ const router = createBrowserRouter([
         children: [
             {
                 path: '/',
-                element: <Navigate to = "/dashboard" />
+                element: <Navigate to = "/login" />
             },
             {
                 path: '/dashboard',
@@ -59,9 +64,27 @@ const router = createBrowserRouter([
             {   path: '/equipment/:id',
                 element: <EquipmentDetails />
             },
+            {path: '/equipment/:id/edit', element: <EditEquipment />},
             {
                 path: '/basket',
                 element: <Basket/>
+            },
+            {
+                path: '/reservations',
+                element: <Reservations/>
+            },
+            {path: '/reservations/:id', element: <ReservationDetails/>},
+            {
+                path: '/profile',
+                element: <Profile/>
+            },
+            {
+                path: '/workers',
+                element: <Workers/>
+            },
+            {
+                path: '/sports/new',
+                element: <AddSport/>
             }
         ],
     },
@@ -72,10 +95,6 @@ const router = createBrowserRouter([
             {
                 path: '/login',
                 element: <Login />
-            },
-            {
-                path: '/signup',
-                element: <Signup />
             }
         ]
     },

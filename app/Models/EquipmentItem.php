@@ -33,7 +33,20 @@ class EquipmentItem extends Model
     public function age(){
         return $this->belongsTo(Age::class);
     }
-    public function reservedEquipments(){
-        return $this->belongsToMany(EquipmentItem::class);
+ //   public function reservedEquipments(){
+   //     return $this->belongsToMany(EquipmentItem::class);
+    //}
+    public function reservations(){
+        return $this->belongsToMany(Reservation::class, 'reserved_equipment')->withPivot('daily_price');
+    }
+
+    public function scopeWithAvailability($query)
+    {
+        return $query->withExists([
+            'reservations as is_occupied' => fn ($reservationQuery) => $reservationQuery->whereHas(
+                'reservationState',
+                fn ($stateQuery) => $stateQuery->where('name', 'Aktivna')
+            ),
+        ]);
     }
 }

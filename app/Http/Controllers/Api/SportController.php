@@ -14,14 +14,16 @@ class SportController extends Controller
     }
 
     public function store(Request $request){
-        $request->validate([
+        $validated = $request->validate([
             'name' => 'required|string|max:255',
             'imageurl' => 'nullable|file|image||mimes:jpeg,png,jpg'
         ]);
 
-        return Sport::create([
-            'name' => $request->name
-        ]);
+        if ($request->hasFile('imageurl')) {
+            $validated['imageurl'] = $request->file('imageurl')->store('sports', 'public');
+        }
+
+        return response()->json(Sport::create($validated), 201);
     }
 
     public function getEquipment(Request $request, $sportId)
@@ -29,7 +31,7 @@ class SportController extends Controller
         $query = EquipmentItem::with([
             'equipmentType',
             'equipmentState'
-        ])
+        ])->withAvailability()
             ->whereHas('equipmentType', function ($q) use ($sportId) {
                 $q->where('sport_id', $sportId);
             });
