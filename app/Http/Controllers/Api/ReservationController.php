@@ -219,7 +219,7 @@ class ReservationController extends Controller
     public function complete(Request $request, Reservation $reservation)
     {
         $this->requireAdmin($request);
-        abort_if(in_array($reservation->reservationState?->name, ['Zavrsena', 'Otkazana'], true), 422, 'Ova rezervacija se ne može završiti.');
+        abort_unless($reservation->reservationState?->name === 'Aktivna', 422, 'Prije evidentiranja povratka potrebno je aktivirati rezervaciju.');
 
         $validated = $request->validate([
             'items' => 'required|array|min:1',
@@ -227,8 +227,7 @@ class ReservationController extends Controller
             'items.*.equipment_state_id' => 'required|integer|exists:equipment_states,id',
             'items.*.notes' => 'nullable|string',
             'items.*.price' => 'required|numeric|min:0',
-            'payment_status' => 'required|in:unpaid,paid',
-            'payment_method' => 'nullable|required_if:payment_status,paid|in:cash,card,bank_transfer',
+            'payment_method' => 'required|in:cash,card,bank_transfer,unpaid',
         ]);
 
         $reservedItemIds = $reservation->reservedEquipments()->pluck('equipment_items.id')->sort()->values()->all();
@@ -252,8 +251,8 @@ class ReservationController extends Controller
 
             $reservation->update([
                 'reservation_state_id' => $completedState->id,
-                'payment_status' => $validated['payment_status'],
-                'payment_method' => $validated['payment_status'] === 'paid' ? $validated['payment_method'] : null,
+                'payment_status' => $validated['payment_method'] === 'unpaid' ? 'unpaid' : 'paid',
+                'payment_method' => $validated['payment_method'] === 'unpaid' ? null : $validated['payment_method'],
                 'receipt_number' => $reservation->receipt_number ?: 'SR-' . str_pad((string) $reservation->id, 6, '0', STR_PAD_LEFT),
                 'rental_days' => $rentalDays,
                 'total_price' => $totalPrice,

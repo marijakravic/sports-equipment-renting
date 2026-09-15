@@ -27,7 +27,7 @@ export default function Reservations() {
     const [states, setStates] = useState([]);
     const [sports, setSports] = useState([]);
     const [filters, setFilters] = useState({from: "", to: "", worker: "", customer: "", status: "", sport: ""});
-    const [payment, setPayment] = useState({payment_status: "paid", payment_method: "cash"});
+    const [payment, setPayment] = useState({payment_method: "cash"});
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [activeReservation, setActiveReservation] = useState(null);
@@ -55,7 +55,7 @@ export default function Reservations() {
             price: item.price,
         })));
         setError("");
-        setPayment({payment_status: reservation.payment_status || "paid", payment_method: reservation.payment_method || "cash"});
+        setPayment({payment_method: reservation.payment_status === "unpaid" ? "unpaid" : reservation.payment_method || "cash"});
     };
 
     const updateReturnedItem = (id, field, value) => {
@@ -165,7 +165,7 @@ export default function Reservations() {
                                 </div>
 
                                 {user?.role === "admin" && !completed && (
-                                    <div className="d-flex gap-2"><button className="btn btn-outline-primary" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "activate"); }} disabled={stateName !== "Zatrazena"}>Aktiviraj</button><button className="btn btn-outline-danger" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "cancel"); }}>Otkaži</button><button className="btn btn-primary" onClick={(event) => { event.stopPropagation(); startCompletion(reservation); }}>Evidentiraj povratak</button></div>
+                                    <div className="d-flex gap-2"><button className="btn btn-outline-primary" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "activate"); }} disabled={stateName !== "Zatrazena"}>Aktiviraj</button><button className="btn btn-outline-danger" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "cancel"); }}>Otkaži</button>{stateName === "Aktivna" && <button className="btn btn-primary" onClick={(event) => { event.stopPropagation(); startCompletion(reservation); }}>Evidentiraj povratak</button>}</div>
                                 )}
                                 {stateName === "Zavrsena" && <div className="mt-3"><span className="me-3"><strong>Plaćanje:</strong> {reservation.payment_status === "paid" ? "Plaćeno" : "Nije plaćeno"}{reservation.payment_method && ` (${reservation.payment_method})`}</span><button className="btn btn-outline-secondary btn-sm" onClick={(event) => { event.stopPropagation(); downloadReceipt(reservation); }}>Preuzmi račun</button></div>}
                             </article>
@@ -207,7 +207,7 @@ export default function Reservations() {
                             </div>
                         ))}
 
-                        <div className="row g-3 border-top pt-3"><div className="col-md-6"><label className="form-label">Status plaćanja</label><select className="form-select" value={payment.payment_status} onChange={(e) => setPayment({...payment, payment_status: e.target.value})}><option value="paid">Plaćeno</option><option value="unpaid">Nije plaćeno</option></select></div><div className="col-md-6"><label className="form-label">Način plaćanja</label><select className="form-select" value={payment.payment_method} disabled={payment.payment_status === "unpaid"} onChange={(e) => setPayment({...payment, payment_method: e.target.value})}><option value="cash">Gotovina</option><option value="card">Kartica</option><option value="bank_transfer">Bankovni transfer</option></select></div></div>
+                        <div className="row g-3 border-top pt-3"><div className="col-md-6"><label className="form-label">Način plaćanja</label><select className="form-select" value={payment.payment_method} onChange={(e) => setPayment({payment_method: e.target.value})}><option value="cash">Gotovina</option><option value="card">Kartica</option><option value="bank_transfer">Bankovni transfer</option><option value="unpaid">Nije plaćeno</option></select></div></div>
 
                         <div className="return-dialog-actions">
                             <button className="btn btn-outline-secondary" onClick={() => setActiveReservation(null)} disabled={saving}>Otkaži</button>
