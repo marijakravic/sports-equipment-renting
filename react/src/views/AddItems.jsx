@@ -58,7 +58,6 @@ export default function AddItems() {
         "Kaciga": letterSizes,
         "Naočare": letterSizes,
         "Rukavice": letterSizes,
-        "Biciklo": letterSizes,
         "Skejtbord": letterSizes,
         "Trotinet": letterSizes,
         "Kabanica": letterSizes,
@@ -70,6 +69,15 @@ export default function AddItems() {
     //  FIX: get name from selected ID
     const selectedType = equipmentTypes.find(t => t.id == equipmentType);
     const availableSizes = equipmentSizeMap[selectedType?.name] || [];
+    const filteredEquipmentTypes = equipmentTypes.filter(
+        (type) => String(type.sport_id) === String(sport)
+    );
+
+    const handleSportChange = (event) => {
+        setSport(event.target.value);
+        setEquipmentType("");
+        setSize("");
+    };
 
     // ---------------- SUBMIT ----------------
     const handleSubmit = async (e) => {
@@ -137,7 +145,7 @@ export default function AddItems() {
                         <select
                             className="form-control"
                             value={sport}
-                            onChange={(e) => setSport(e.target.value)}
+                            onChange={handleSportChange}
                         >
                             <option value="">Izaberi sport</option>
                             {sports.map((s) => (
@@ -154,13 +162,16 @@ export default function AddItems() {
                         <select
                             className="form-control"
                             value={equipmentType}
+                            disabled={!sport}
                             onChange={(e) => {
                                 setEquipmentType(e.target.value);
                                 setSize("");
                             }}
                         >
-                            <option value="">Izaberi vrstu opreme</option>
-                            {equipmentTypes.map((eq) => (
+                            <option value="">
+                                {sport ? "Izaberi vrstu opreme" : "Prvo izaberite sport"}
+                            </option>
+                            {filteredEquipmentTypes.map((eq) => (
                                 <option key={eq.id} value={eq.id}>
                                     {eq.name}
                                 </option>

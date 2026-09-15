@@ -84,7 +84,7 @@ export default function Basket() {
         </h2>
         {hasUnavailableItems && (
             <div className="alert alert-secondary">
-                Zauzeta ili otpisana oprema ne može se rezervisati. Uklonite je iz korpe da biste nastavili.
+                Zauzeta ili otpisana oprema se ne može rezervisati. Uklonite je iz korpe da biste nastavili.
             </div>
         )}
         {items.map(item => (<BasketItemCard
@@ -94,12 +94,12 @@ export default function Basket() {
         />))}
         <div className="card mt-4">
             <div className="card-header">
-                Reservation Information
+                Podaci za rezervaciju
             </div>
             <div className="card-body">
                 <div className="row">
                     <div className="col-md-6 mb-3">
-                        <label>Start date</label>
+                        <label>Početak rezervacije</label>
                         <input
                             type="date"
                             className="form-control"
@@ -109,7 +109,7 @@ export default function Basket() {
                         />
                     </div>
                     <div className="col-md-6 mb-3">
-                        <label>End date</label>
+                        <label>Kraj rezervacije</label>
                         <input
                             type="date"
                             className="form-control"
@@ -119,7 +119,7 @@ export default function Basket() {
                         />
                     </div>
                     <div className="col-md-6 mb-3">
-                        <label>Name</label>
+                        <label>Ime</label>
                         <input
                             type="text"
                             className="form-control"
@@ -129,7 +129,7 @@ export default function Basket() {
                         />
                     </div>
                     <div className="col-md-6 mb-3">
-                        <label>Surname</label>
+                        <label>Prezime</label>
                         <input
                             type="text"
                             className="form-control"
@@ -139,7 +139,7 @@ export default function Basket() {
                         />
                     </div>
                     <div className="col-md-6 mb-3">
-                        <label>Contact</label>
+                        <label>Kontakt telefon</label>
                         <input
                             type="text"
                             className="form-control"
@@ -149,7 +149,7 @@ export default function Basket() {
                         />
                     </div>
                     <div className="col-md-6 mb-3">
-                        <label>Personal document</label>
+                        <label>Lični dokument</label>
                         <input
                             type="text"
                             className="form-control"
@@ -168,7 +168,7 @@ export default function Basket() {
                     onClick={handleReserve}
                     disabled={submitting || rentalDays === 0 || hasUnavailableItems}
                 >
-                    {submitting ? "Slanje..." : "Reserve"}
+                    {submitting ? "Slanje..." : "Rezerviši"}
                 </button>
             </div>
         </div>
