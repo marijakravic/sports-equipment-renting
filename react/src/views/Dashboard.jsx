@@ -126,9 +126,9 @@ export default function Dashboard() {
                             <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 5v14M5 12h14"/></svg>
                             Dodaj novu opremu
                         </Link>
-                        {user?.role === "admin" && <Link to="/sports/new" className="dash-action">
+                        {user?.role === "admin" && <Link to="/catalogue-management" className="dash-action">
                             <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M8 12h8"/></svg>
-                            Dodaj novi sport
+                            Upravljanje katalogom
                         </Link>}
                         <Link to="/sports" className="dash-action">
                             <svg viewBox="0 0 24 24" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 8 12 3 3 8v8l9 5 9-5V8Z"/><path d="M3 8l9 5 9-5M12 13v8"/></svg>

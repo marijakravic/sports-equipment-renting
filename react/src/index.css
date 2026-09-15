@@ -619,6 +619,28 @@ table > tbody > tr > td {
     color: var(--text-primary);
 }
 
+/* Admin catalogue management */
+.catalogue-manager-page { max-width: 1060px; margin: 0 auto; }
+.catalogue-manager { margin: 28px 0 8px; padding-top: 24px; border-top: 1px solid var(--border); }
+.catalogue-manager-heading h1 { font-size: 20px; margin: 0 0 4px; }
+.catalogue-manager-heading p { color: var(--text-secondary); font-size: 13px; margin: 0 0 16px; }
+.catalogue-manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+.catalogue-manager-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+.catalogue-manager-card h2 { font-size: 15px; margin: 0; padding: 14px 16px; border-bottom: 1px solid var(--border); }
+.catalogue-card-head { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding: 10px 12px 10px 16px; }
+.catalogue-card-head h2 { padding: 0; border: none; }
+.catalogue-list { padding: 0 16px; }
+.catalogue-row { min-height: 57px; display: flex; align-items: center; justify-content: space-between; gap: 12px; border-bottom: 1px solid var(--border); font-size: 13px; }
+.catalogue-row:last-child { border-bottom: none; }
+.catalogue-row > span { min-width: 0; }
+.catalogue-row small { display: block; color: var(--text-secondary); margin-top: 2px; }
+.catalogue-row > div { display: flex; flex-shrink: 0; gap: 6px; }
+.catalogue-edit-form { padding: 14px 16px; background: var(--surface-1); border-bottom: 1px solid var(--border); }
+.catalogue-edit-form label { display: block; color: var(--text-secondary); font-size: 12px; font-weight: 600; margin-bottom: 10px; }
+.catalogue-edit-form input, .catalogue-edit-form select { margin-top: 4px; }
+.catalogue-form-actions { display: flex; justify-content: flex-end; gap: 6px; }
+@media (max-width: 780px) { .catalogue-manager-grid { grid-template-columns: 1fr; } }
+
 /* Basket item */
 .basket-item {
     display: flex;
@@ -992,6 +1014,20 @@ table > tbody > tr > td {
 .dash-kpi-danger { color: var(--danger); }
 .dash-kpi-link { color: inherit; text-decoration: none; transition: transform .15s, box-shadow .15s; }
 .dash-kpi-link:hover { color: inherit; transform: translateY(-2px); box-shadow: 0 5px 14px rgba(0, 0, 0, .08); }
+.dash-analytics { display: grid; grid-template-columns: .75fr 1fr 1.7fr; gap: 16px; }
+.dash-active-rentals { padding-bottom: 16px; }
+.dash-active-value { color: var(--accent); font-size: 42px; font-weight: 700; line-height: 1; padding: 20px 18px 3px; }
+.dash-active-rentals p { color: var(--text-secondary); font-size: 12.5px; margin: 0; padding: 0 18px; }
+.dash-ranking { padding: 4px 18px; }
+.dash-ranking-row { display: grid; grid-template-columns: 23px 1fr auto; gap: 8px; align-items: center; padding: 9px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+.dash-ranking-row:last-child { border-bottom: none; }
+.dash-rank { color: var(--text-muted); font-size: 12px; font-weight: 700; }
+.dash-bars { height: 190px; padding: 12px 16px 15px; display: flex; align-items: end; justify-content: space-between; gap: 8px; }
+.dash-bar-column { flex: 1; min-width: 0; height: 100%; display: grid; grid-template-rows: 20px 1fr 18px; align-items: end; text-align: center; }
+.dash-bar-value { font-size: 10px; color: var(--text-secondary); white-space: nowrap; }
+.dash-bar-track { height: 100%; display: flex; align-items: end; justify-content: center; border-bottom: 1px solid var(--border); }
+.dash-bar { width: min(28px, 70%); min-height: 3px; border-radius: 5px 5px 0 0; background: var(--accent); }
+.dash-bar-label { font-size: 11px; color: var(--text-muted); margin-top: 4px; text-transform: capitalize; }
 
 .dash-grid {
     display: grid;
@@ -1143,3 +1179,4 @@ table > tbody > tr > td {
 .availability-history-row small { display: block; color: var(--text-secondary); margin-top: 2px; }
 .availability-empty { color: var(--text-muted); font-size: 13px; margin: 18px 0 2px; }
 @media (max-width: 780px) { .equipment-availability { grid-template-columns: 1fr; } .availability-heading { align-items: flex-start; flex-direction: column; } }
+@media (max-width: 780px) { .dash-analytics { grid-template-columns: 1fr; } }

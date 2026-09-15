@@ -16,7 +16,7 @@ class SportController extends Controller
     public function store(Request $request){
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'imageurl' => 'nullable|file|image||mimes:jpeg,png,jpg'
+            'imageurl' => 'nullable|file|image|mimes:jpeg,png,jpg'
         ]);
 
         if ($request->hasFile('imageurl')) {
@@ -24,6 +24,34 @@ class SportController extends Controller
         }
 
         return response()->json(Sport::create($validated), 201);
+    }
+
+    public function update(Request $request, Sport $sport)
+    {
+        $this->requireAdmin($request);
+        $validated = $request->validate([
+            'name' => 'required|string|max:255|unique:sports,name,' . $sport->id,
+            'imageurl' => 'nullable|file|image|mimes:jpeg,png,jpg',
+        ]);
+
+        if ($request->hasFile('imageurl')) {
+            $validated['imageurl'] = $request->file('imageurl')->store('sports', 'public');
+        } else {
+            unset($validated['imageurl']);
+        }
+
+        $sport->update($validated);
+
+        return $sport->fresh();
+    }
+
+    public function destroy(Request $request, Sport $sport)
+    {
+        $this->requireAdmin($request);
+        abort_if($sport->equipmentTypes()->exists(), 422, 'Sport nije moguće obrisati dok sadrži vrste opreme.');
+        $sport->delete();
+
+        return response()->noContent();
     }
 
     public function getEquipment(Request $request, $sportId)
@@ -50,5 +78,10 @@ class SportController extends Controller
         }
 
         return $query->get();
+    }
+
+    private function requireAdmin(Request $request): void
+    {
+        abort_unless($request->user()?->role === 'admin', 403, 'Ovu radnju može izvršiti samo administrator.');
     }
 }

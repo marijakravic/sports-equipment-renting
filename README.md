@@ -121,8 +121,13 @@ All endpoints are prefixed with `/api`. Successful login and sign-up responses c
 | `POST` | `/logout` | Revoke the current token (Sanctum-protected) |
 | `GET` | `/user` | Return the authenticated user |
 | `GET` | `/sports` | List sports |
+| `PUT` | `/sports/{id}` | Update a sport and optional image (admin only) |
+| `DELETE` | `/sports/{id}` | Delete an empty sport (admin only) |
 | `GET` | `/sports/{id}/equipment` | List a sport’s equipment; accepts `search` |
 | `GET` | `/equipmentTypes` | List equipment types with their sports |
+| `POST` | `/equipmentTypes` | Create an equipment type (admin only) |
+| `PUT` | `/equipmentTypes/{id}` | Update an equipment type (admin only) |
+| `DELETE` | `/equipmentTypes/{id}` | Delete an empty equipment type (admin only) |
 | `GET` | `/ages` | List age groups |
 | `GET` | `/states` | List equipment states |
 | `GET` | `/equipment-items` | List equipment with type and state |

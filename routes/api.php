@@ -24,10 +24,9 @@ Route::get('/sports', [SportController::class, 'index']);
 Route::get('/equipmentTypes', [EquipmentTypeController::class, 'index']);
 Route::get('/ages', [AgeController::class, 'index']);
 Route::get('/states', [EquipmentStateController::class, 'index']);
-Route::get('//equipmentTypes/{sportId}', [EquipmentTypeController::class, 'bySport']);
+Route::get('/equipmentTypes/{sportId}', [EquipmentTypeController::class, 'bySport']);
 Route::get('/equipment-items', [EquipmentItemController::class, 'index']);
 Route::get('/equipment-items/{equipmentItem}', [EquipmentItemController::class, 'show']);
-Route::get('/sports', [SportController::class, 'index']);
 Route::get('/sports/{id}/equipment', [SportController::class, 'getEquipment']);
 Route::get('/equipment', [EquipmentItemController::class, 'searchAll']);
 
@@ -47,4 +46,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/reservations/{reservation}/receipt', [ReservationController::class, 'receipt']);
     Route::post('/workers', [WorkerController::class, 'store'])->middleware('admin');
     Route::post('/sports', [SportController::class, 'store'])->middleware('admin');
+    Route::put('/sports/{sport}', [SportController::class, 'update'])->middleware('admin');
+    Route::delete('/sports/{sport}', [SportController::class, 'destroy'])->middleware('admin');
+    Route::post('/equipmentTypes', [EquipmentTypeController::class, 'store'])->middleware('admin');
+    Route::put('/equipmentTypes/{equipmentType}', [EquipmentTypeController::class, 'update'])->middleware('admin');
+    Route::delete('/equipmentTypes/{equipmentType}', [EquipmentTypeController::class, 'destroy'])->middleware('admin');
 });

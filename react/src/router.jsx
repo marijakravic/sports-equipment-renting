@@ -16,9 +16,9 @@ import Basket from "./views/Basket.jsx";
 import Reservations from "./views/Reservations.jsx";
 import Profile from "./views/Profile.jsx";
 import Workers from "./views/Workers.jsx";
-import AddSport from "./views/AddSport.jsx";
 import EditEquipment from "./views/EditEquipment.jsx";
 import ReservationDetails from "./views/ReservationDetails.jsx";
+import CatalogueManagement from "./views/CatalogueManagement.jsx";
 
 const router = createBrowserRouter([
     {
@@ -82,10 +82,7 @@ const router = createBrowserRouter([
                 path: '/workers',
                 element: <Workers/>
             },
-            {
-                path: '/sports/new',
-                element: <AddSport/>
-            }
+            {path: '/catalogue-management', element: <CatalogueManagement/>}
         ],
     },
     {
