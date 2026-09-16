@@ -78,7 +78,7 @@ export default function EquipmentCard({ item, reservationId = null }) {
                         {Number(item.price).toFixed(2)} KM<span> / dan</span>
                     </span>
                     <div className="equipment-card-actions">
-                        {reservationId && user?.role === "admin" && <button className="btn btn-primary btn-sm" onClick={addToReservation} disabled={adding || isWrittenOff || isOccupied}>{adding ? "Dodavanje..." : "Dodaj"}</button>}
+                        {reservationId && user && <button className="btn btn-primary btn-sm" onClick={addToReservation} disabled={adding || isWrittenOff || isOccupied}>{adding ? "Dodavanje..." : "Dodaj"}</button>}
                         {user?.role === "admin" && <button className="btn btn-outline-secondary btn-sm equipment-card-edit" onClick={(event) => { event.stopPropagation(); navigate(`/equipment/${item.id}/edit`); }}>Uredi</button>}
                     </div>
                 </div>

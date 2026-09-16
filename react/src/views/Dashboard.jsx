@@ -61,12 +61,12 @@ export default function Dashboard() {
                 </div>
                 <div>
                     <div className="dash-hero-date">{today}</div>
-                    <h1 className="dash-hero-title">Dobrodošli nazad</h1>
+                    <h1 className="dash-hero-title">Dobrodošli</h1>
                     <p className="dash-hero-sub">Pregled stanja inventara i brze akcije za tim.</p>
                 </div>
             </div>
 
-            {user?.role === "admin" && <DashboardAnalytics loading={loading} activeReservations={activeReservations} rentedItems={rentedItems} monthlyRevenue={monthlyRevenue}/>} 
+            {user?.role === "admin" && <DashboardAnalytics loading={loading} activeReservations={activeReservations} rentedItems={rentedItems} monthlyRevenue={monthlyRevenue}/>}
 
             <div className="dash-kpis">
                 <div className="dash-kpi">

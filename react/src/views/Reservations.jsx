@@ -164,7 +164,7 @@ export default function Reservations() {
                                     ))}
                                 </div>
 
-                                {user?.role === "admin" && !completed && (
+                                {user && !completed && (
                                     <div className="d-flex gap-2"><button className="btn btn-outline-primary" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "activate"); }} disabled={stateName !== "Zatrazena"}>Aktiviraj</button><button className="btn btn-outline-danger" onClick={(event) => { event.stopPropagation(); changeReservationState(reservation, "cancel"); }}>Otkaži</button>{stateName === "Aktivna" && <button className="btn btn-primary" onClick={(event) => { event.stopPropagation(); startCompletion(reservation); }}>Evidentiraj povratak</button>}</div>
                                 )}
                                 {stateName === "Zavrsena" && <div className="mt-3"><span className="me-3"><strong>Plaćanje:</strong> {reservation.payment_status === "paid" ? "Plaćeno" : "Nije plaćeno"}{reservation.payment_method && ` (${reservation.payment_method})`}</span><button className="btn btn-outline-secondary btn-sm" onClick={(event) => { event.stopPropagation(); downloadReceipt(reservation); }}>Preuzmi račun</button></div>}

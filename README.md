@@ -138,8 +138,13 @@ All endpoints are prefixed with `/api`. Successful login and sign-up responses c
 | `POST` | `/basket` | Resolve an `ids` array to equipment records, including sport/type/state data |
 | `POST` | `/reservations` | Create a reservation and attach `equipment_item_ids` (Sanctum-protected) |
 | `GET` | `/reservations/{id}` | Get one reservation with its equipment (Sanctum-protected) |
-| `PUT` | `/reservations/{id}` | Update an open reservation and its equipment (admin only) |
-| `POST` | `/reservations/{id}/equipment-items` | Add one available item to an open reservation (admin only) |
+| `GET` | `/reservations` | List all reservations (admin and worker) |
+| `PUT` | `/reservations/{id}` | Update an open reservation and its equipment (admin and worker) |
+| `POST` | `/reservations/{id}/equipment-items` | Add one available item to an open reservation (admin and worker) |
+| `PUT` | `/reservations/{id}/activate` | Activate a requested reservation (admin and worker) |
+| `PUT` | `/reservations/{id}/cancel` | Cancel an open reservation (admin and worker) |
+| `PUT` | `/reservations/{id}/complete` | Record returned equipment and complete an active reservation (admin and worker) |
+| `GET` | `/reservations/{id}/receipt` | Download the completed reservation receipt (admin and worker) |
 
 ### Key request shapes
 

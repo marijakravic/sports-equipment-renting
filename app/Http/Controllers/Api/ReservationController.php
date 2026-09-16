@@ -61,7 +61,7 @@ class ReservationController extends Controller
 
     public function update(Request $request, Reservation $reservation)
     {
-        $this->requireAdmin($request);
+        $this->requireReservationManager($request);
         abort_if(in_array($reservation->reservationState?->name, ['Zavrsena', 'Otkazana'], true), 422, 'Završena ili otkazana rezervacija se ne može mijenjati.');
 
         $validated = $request->validate([
@@ -106,7 +106,7 @@ class ReservationController extends Controller
 
     public function addEquipmentItem(Request $request, Reservation $reservation)
     {
-        $this->requireAdmin($request);
+        $this->requireReservationManager($request);
         abort_if(in_array($reservation->reservationState?->name, ['Zavrsena', 'Otkazana'], true), 422, 'Završena ili otkazana rezervacija se ne može mijenjati.');
         $validated = $request->validate(['equipment_item_id' => 'required|integer|exists:equipment_items,id']);
 
@@ -182,7 +182,7 @@ class ReservationController extends Controller
 
     public function activate(Request $request, Reservation $reservation)
     {
-        $this->requireAdmin($request);
+        $this->requireReservationManager($request);
 
         return DB::transaction(function () use ($reservation) {
             $reservation = Reservation::lockForUpdate()->findOrFail($reservation->id);
@@ -207,7 +207,7 @@ class ReservationController extends Controller
 
     public function cancel(Request $request, Reservation $reservation)
     {
-        $this->requireAdmin($request);
+        $this->requireReservationManager($request);
         abort_if(in_array($reservation->reservationState?->name, ['Zavrsena', 'Otkazana'], true), 422, 'Ova rezervacija se više ne može otkazati.');
 
         $cancelledState = ReservationState::where('name', 'Otkazana')->firstOrFail();
@@ -218,7 +218,7 @@ class ReservationController extends Controller
 
     public function complete(Request $request, Reservation $reservation)
     {
-        $this->requireAdmin($request);
+        $this->requireReservationManager($request);
         abort_unless($reservation->reservationState?->name === 'Aktivna', 422, 'Prije evidentiranja povratka potrebno je aktivirati rezervaciju.');
 
         $validated = $request->validate([
@@ -274,9 +274,13 @@ class ReservationController extends Controller
             ->download("racun-{$reservation->receipt_number}.pdf");
     }
 
-    private function requireAdmin(Request $request): void
+    private function requireReservationManager(Request $request): void
     {
-        abort_unless($request->user()->role === 'admin', 403, 'Ovu radnju može izvršiti samo administrator.');
+        abort_unless(
+            in_array($request->user()?->role, ['admin', 'worker'], true),
+            403,
+            'Ovu radnju može izvršiti samo administrator ili radnik.'
+        );
     }
 
     private function changeState(Reservation $reservation, string $expectedState, string $nextState, array $attributes = []): void
